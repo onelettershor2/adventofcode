@@ -6,7 +6,7 @@ const MAX_RED=12
 const MAX_GREEN=13
 const MAX_BLUE=14
 
-fs.readFile('test.txt', (err, data) => {
+fs.readFile('input.txt', (err, data) => {
     if (err) throw err;
     input = data.toString();
     solve()
@@ -16,20 +16,25 @@ function solve() {
 
     let inputs = input.split("\n");
 
+    let possibleGamesTotal = 0
+
     inputs.forEach(input => {
-        console.log(input);
-        parser(input)
+        let game = parser(input)
+        if (game.possible) {
+            possibleGamesTotal += game.id
+        }
     });
+
+    console.log(possibleGamesTotal)
 
 }
 
 function parser(line) {
 
     let splits = line.split(":")
-    let id = splits[0].split(" ")[1]
+    let id = parseInt(splits[0].split(" ")[1])
     let sets = splits[1].split(";")
     sets = sets.map((set) => set.replace(" ", ""))
-    console.log(sets)
 
     sets = sets.map((set) => {
 
@@ -38,7 +43,6 @@ function parser(line) {
         let totalBlue = 0    
 
         let colors = set.split(",")
-        // need to parse out the colors here now. It is only splitting at the commas... 
 
         colors.forEach(color => {
             if (color.includes(" red")) {
@@ -53,7 +57,8 @@ function parser(line) {
         return new GameSet(totalRed, totalGreen, totalBlue)
     })
 
-    console.log(sets)
+    return new Game(id, sets)
+
 }
 
 class Game {
@@ -61,6 +66,7 @@ class Game {
         this.id = id;
         this.sets = sets;
         this.possible = true
+        this.isGamePossible()
     }
 
     isGamePossible() {
@@ -68,9 +74,11 @@ class Game {
             return
         }
 
-        this.possible = this.sets.forEach((set) => {
-            return set.red < MAX_RED && set.green < MAX_GREEN && set.blue < MAX_BLUE
+        let possibilities = this.sets.map((set) => {
+            return set.red <= MAX_RED && set.green <= MAX_GREEN && set.blue <= MAX_BLUE
         })
+
+        this.possible = possibilities.includes(false) ? false : true
     }
 }
 
