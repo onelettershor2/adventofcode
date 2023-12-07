@@ -17,15 +17,18 @@ function solve() {
     let inputs = input.split("\n");
 
     let possibleGamesTotal = 0
+    let powerTotal = 0
 
     inputs.forEach(input => {
         let game = parser(input)
         if (game.possible) {
             possibleGamesTotal += game.id
         }
+        powerTotal += game.fewestCubesPossiblePower()
     });
 
-    console.log(possibleGamesTotal)
+    console.log("Possible games: " + possibleGamesTotal)
+    console.log("Power total: " + powerTotal)
 
 }
 
@@ -79,6 +82,28 @@ class Game {
         })
 
         this.possible = possibilities.includes(false) ? false : true
+    }
+
+    fewestCubesPossiblePower() {
+
+        let fewestRed = 0
+        let fewestGreen = 0
+        let fewestBlue = 0
+
+        this.sets.forEach((set) => {
+            if (set.red > fewestRed) {
+                fewestRed = set.red
+            } 
+            if (set.green > fewestGreen) {
+                fewestGreen = set.green
+            } 
+            if (set.blue > fewestBlue) {
+                fewestBlue = set.blue
+            }
+        })
+
+        return fewestRed * fewestGreen * fewestBlue
+
     }
 }
 
