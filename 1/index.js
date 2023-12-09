@@ -2,7 +2,7 @@ import fs from 'fs';
 
 var input = ""
 
-fs.readFile('case1.txt', (err, data) => {
+fs.readFile('input.txt', (err, data) => {
     if (err) throw err;
     input = data.toString();
     solve()
